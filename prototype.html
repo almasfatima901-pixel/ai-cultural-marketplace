@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtisanConnect - Traditional Crafts Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .product-3d {
+            transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .product-3d:hover {
+            transform: perspective(1000px) rotateY(-15deg) rotateX(10deg) translateZ(50px);
+        }
+        
+        .instagram-story {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            padding: 3px;
+            border-radius: 50%;
+        }
+        
+        .reel-container {
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+        }
+        
+        .reel-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .reel-item {
+            scroll-snap-align: start;
+        }
+        
+        .floating-bot {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(2deg); }
+            50% { transform: translateY(-5px) rotate(0deg); }
+            75% { transform: translateY(-15px) rotate(-2deg); }
+        }
+        
+        .tech-indicator {
+            background: linear-gradient(45deg, #00d4ff, #090979);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .ar-overlay {
+            background: linear-gradient(45deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+            border: 2px dashed rgba(0, 255, 255, 0.5);
+        }
+        
+        .pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+        }
+        
+        @keyframes pulse-ring {
+            0% { transform: scale(0.33); }
+            80%, 100% { opacity: 0; }
+        }
+        
+        .collaboration-badge {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 10px rgba(255, 107, 107, 0.5); }
+            to { box-shadow: 0 0 20px rgba(254, 202, 87, 0.8); }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen font-['Inter']">
+    <!-- Navigation -->
+    <nav class="glass-card sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="text-2xl font-['Playfair_Display'] font-bold text-white">
+                    🎨 ArtisanConnect
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <button onclick="showSection('home')" class="text-white/90 hover:text-white font-medium transition-colors">Home</button>
+                    <button onclick="showSection('trending')" class="text-white/90 hover:text-white font-medium transition-colors">Trending</button>
+                    <button onclick="showSection('reels')" class="text-white/90 hover:text-white font-medium transition-colors">Reels</button>
+                    <button onclick="showSection('workshops')" class="text-white/90 hover:text-white font-medium transition-colors">Workshops</button>
+                    <button onclick="showSection('ar-studio')" class="text-white/90 hover:text-white font-medium transition-colors">AR Studio</button>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="tech-indicator">React + AI + CV</div>
+                <button onclick="showSection('login')" id="login-btn" class="bg-white/20 text-white px-6 py-2 rounded-full hover:bg-white/30 transition-all backdrop-blur-sm">
+                    Login
+                </button>
+                <div id="user-profile" class="hidden w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white cursor-pointer" onclick="toggleUserMenu()">
+                    👤
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <div id="login-section" class="min-h-screen flex items-center justify-center p-6">
+        <div class="glass-card rounded-3xl p-8 max-w-md w-full">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-['Playfair_Display'] font-bold text-white mb-2">
+                    Welcome Back
+                </h2>
+                <p class="text-white/70">Connect with traditional artisans worldwide</p>
+            </div>
+            
+            <!-- User Type Toggle -->
+            <div class="flex bg-white/10 rounded-2xl p-1 mb-6">
+                <button onclick="setUserType('customer')" id="customer-btn" class="flex-1 py-3 px-4 rounded-xl bg-white text-purple-600 font-medium transition-all">
+                    🛍️ Customer
+                </button>
+                <button onclick="setUserType('artist')" id="artist-btn" class="flex-1 py-3 px-4 rounded-xl text-white/70 font-medium transition-all">
+                    🎨 Artist
+                </button>
+            </div>
+            
+            <!-- Auth Mode Toggle -->
+            <div class="flex bg-white/10 rounded-xl p-1 mb-6">
+                <button onclick="setAuthMode('login')" id="login-tab" class="flex-1 py-2 px-4 rounded-lg bg-white/20 text-white font-medium">
+                    Login
+                </button>
+                <button onclick="setAuthMode('signup')" id="signup-tab" class="flex-1 py-2 px-4 rounded-lg text-white/70 font-medium">
+                    Sign Up
+                </button>
+            </div>
+            
+            <!-- Auth Form -->
+            <form onsubmit="handleAuth(event)" class="space-y-4">
+                <div>
+                    <input type="text" placeholder="Username" required class="w-full p-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/60 focus:border-white/50 focus:outline-none backdrop-blur-sm">
+                </div>
+                <div id="email-field" class="hidden">
+                    <input type="email" placeholder="Email Address" class="w-full p-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/60 focus:border-white/50 focus:outline-none backdrop-blur-sm">
+                </div>
+                <div>
+                    <input type="password" placeholder="Password" required class="w-full p-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/60 focus:border-white/50 focus:outline-none backdrop-blur-sm">
+                </div>
+                <div id="confirm-password-field" class="hidden">
+                    <input type="password" placeholder="Confirm Password" class="w-full p-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/60 focus:border-white/50 focus:outline-none backdrop-blur-sm">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-600 transition-all transform hover:scale-105">
+                    <span id="auth-text">Login to Continue</span>
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-white/60 text-sm">Powered by Generative AI • Computer Vision • React</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home/Trending Section -->
+    <div id="home-section" class="hidden min-h-screen p-6">
+        <div class="max-w-7xl mx-auto">
+            <!-- Instagram-style Stories -->
+            <div class="flex space-x-4 mb-8 overflow-x-auto pb-4">
+                <div class="flex flex-col items-center space-y-2 min-w-max">
+                    <div class="instagram-story">
+                        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-3xl backdrop-blur-sm">
+                            ➕
+                        </div>
+                    </div>
+                    <span class="text-white text-xs font-medium">Your Story</span>
+                </div>
+                <div class="flex flex-col items-center space-y-2 min-w-max">
+                    <div class="instagram-story">
+                        <div class="w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-3xl">
+                            🏺
+                        </div>
+                    </div>
+                    <span class="text-white text-xs font-medium">Pottery Live</span>
+                </div>
+                <div class="flex flex-col items-center space-y-2 min-w-max">
+                    <div class="instagram-story">
+                        <div class="w-20 h-20 bg-gradient-to-br from-red-400 to-pink-500 rounded-full flex items-center justify-center text-3xl">
+                            🧵
+                        </div>
+                    </div>
+                    <span class="text-white text-xs font-medium">Weaving</span>
+                </div>
+                <div class="flex flex-col items-center space-y-2 min-w-max">
+                    <div class="instagram-story">
+                        <div class="w-20 h-20 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-3xl">
+                            💍
+                        </div>
+                    </div>
+                    <span class="text-white text-xs font-medium">Jewelry</span>
+                </div>
+            </div>
+            
+            <h1 class="text-4xl font-['Playfair_Display'] font-bold text-white text-center mb-12">
+                Trending 3D Crafts
+            </h1>
+            
+            <!-- 3D Product Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Product 1 -->
+                <div class="product-3d glass-card rounded-2xl p-6 group">
+                    <div class="relative overflow-hidden rounded-xl mb-4">
+                        <div class="w-full h-64 bg-gradient-to-br from-amber-300 to-amber-600 flex items-center justify-center text-6xl relative">
+                            🏺
+                            <div class="absolute top-3 right-3 tech-indicator">3D Scan</div>
+                            <div class="absolute bottom-3 left-3 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold pulse-ring">
+                                AR Ready
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <h3 class="text-xl font-semibold text-white">Handcrafted Pottery</h3>
+                        <p class="text-white/70 text-sm">Traditional clay pottery with computer vision authentication</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-bold text-white">₹2,500</span>
+                            <div class="flex space-x-2">
+                                <button onclick="tryAR('pottery')" class="bg-blue-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-blue-600 transition-colors">
+                                    AR Try
+                                </button>
+                                <button onclick="customizeAI('pottery')" class="bg-purple-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-purple-600 transition-colors">
+                                    AI Custom
+                                </button>
+                            </div>
+                        </div>
+                        <button onclick="addToCart('pottery')" class="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white py-3 rounded-xl font-semibold hover:from-green-500 hover:to-blue-600 transition-all transform hover:scale-105">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Product 2 -->
+                <div class="product-3d glass-card rounded-2xl p-6 group">
+                    <div class="relative overflow-hidden rounded-xl mb-4">
+                        <div class="w-full h-64 bg-gradient-to-br from-red-300 to-red-600 flex items-center justify-center text-6xl relative">
+                            🧵
+                            <div class="absolute top-3 right-3 tech-indicator">AI Gen</div>
+                            <div class="absolute bottom-3 left-3 collaboration-badge text-white px-2 py-1 rounded-full text-xs font-semibold">
+                                Collab
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <h3 class="text-xl font-semibold text-white">AI-Woven Textiles</h3>
+                        <p class="text-white/70 text-sm">Generative AI patterns with traditional techniques</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-bold text-white">₹3,200</span>
+                            <div class="flex space-x-2">
+                                <button onclick="viewPattern('textile')" class="bg-indigo-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-indigo-600 transition-colors">
+                                    View Pattern
+                                </button>
+                                <button onclick="collaborate('textile')" class="bg-orange-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-orange-600 transition-colors">
+                                    Collaborate
+                                </button>
+                            </div>
+                        </div>
+                        <button onclick="addToCart('textile')" class="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white py-3 rounded-xl font-semibold hover:from-green-500 hover:to-blue-600 transition-all transform hover:scale-105">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Product 3 -->
+                <div class="product-3d glass-card rounded-2xl p-6 group">
+                    <div class="relative overflow-hidden rounded-xl mb-4">
+                        <div class="w-full h-64 bg-gradient-to-br from-yellow-300 to-yellow-600 flex items-center justify-center text-6xl relative">
+                            💍
+                            <div class="absolute top-3 right-3 tech-indicator">CV Auth</div>
+                            <div class="absolute bottom-3 left-3 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                                Verified
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <h3 class="text-xl font-semibold text-white">Traditional Jewelry</h3>
+                        <p class="text-white/70 text-sm">Computer vision verified authenticity & AR fitting</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-bold text-white">₹5,800</span>
+                            <div class="flex space-x-2">
+                                <button onclick="verifyAuth('jewelry')" class="bg-green-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-600 transition-colors">
+                                    Verify
+                                </button>
+                                <button onclick="tryAR('jewelry')" class="bg-pink-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-pink-600 transition-colors">
+                                    AR Fit
+                                </button>
+                            </div>
+                        </div>
+                        <button onclick="addToCart('jewelry')" class="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white py-3 rounded-xl font-semibold hover:from-green-500 hover:to-blue-600 transition-all transform hover:scale-105">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reels Section -->
+    <div id="reels-section" class="hidden min-h-screen p-6">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl font-['Playfair_Display'] font-bold text-white text-center mb-8">
+                Artisan Reels
+            </h2>
+            
+            <!-- Reel Categories -->
+            <div class="flex space-x-4 mb-8 justify-center overflow-x-auto">
+                <button onclick="filterReels('promotional')" id="promo-filter" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-medium whitespace-nowrap">
+                    🎯 Promotional
+                </button>
+                <button onclick="filterReels('collaborative')" id="collab-filter" class="px-6 py-3 bg-white/20 text-white rounded-full font-medium backdrop-blur-sm whitespace-nowrap">
+                    🤝 Collaborative
+                </button>
+                <button onclick="filterReels('reviews')" id="review-filter" class="px-6 py-3 bg-white/20 text-white rounded-full font-medium backdrop-blur-sm whitespace-nowrap">
+                    ⭐ Reviews
+                </button>
+            </div>
+            
+            <!-- Reels Feed -->
+            <div class="reel-container h-96 overflow-y-auto space-y-6">
+                <!-- Promotional Reel -->
+                <div class="reel-item glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold">
+                                RK
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white">Rajesh Kumar</h4>
+                                <p class="text-white/70 text-sm">Master Potter • 2.3K followers</p>
+                            </div>
+                        </div>
+                        <button onclick="followArtist('rajesh')" class="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-600 transition-colors">
+                            Follow
+                        </button>
+                    </div>
+                    
+                    <div class="relative w-full h-64 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl mb-4 overflow-hidden group cursor-pointer" onclick="playReel('pottery-demo')">
+                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/20 transition-all">
+                            <div class="text-white text-center">
+                                <div class="text-6xl mb-2 group-hover:scale-110 transition-transform">▶️</div>
+                                <p class="font-medium">Pottery Making Process</p>
+                                <p class="text-sm opacity-80">2.1K views • 3 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="absolute top-4 right-4 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                            LIVE
+                        </div>
+                    </div>
+                    
+                    <p class="text-white mb-4">
+                        Creating this beautiful vase using traditional techniques passed down through generations! 🏺✨ 
+                        <br><br>
+                        <span class="text-blue-300 cursor-pointer hover:underline" onclick="openProductLink('pottery-vase')">🔗 Shop this piece</span>
+                        <br>
+                        <span class="text-white/60">#HandmadePottery #TraditionalCraft #ArtisanMade</span>
+                    </p>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex space-x-6">
+                            <button onclick="likeReel('pottery-demo')" class="flex items-center space-x-2 text-white/80 hover:text-red-400 transition-colors">
+                                <span class="text-xl">❤️</span> <span>234</span>
+                            </button>
+                            <button onclick="commentReel('pottery-demo')" class="flex items-center space-x-2 text-white/80 hover:text-blue-400 transition-colors">
+                                <span class="text-xl">💬</span> <span>45</span>
+                            </button>
+                            <button onclick="shareReel('pottery-demo')" class="flex items-center space-x-2 text-white/80 hover:text-green-400 transition-colors">
+                                <span class="text-xl">📤</span> <span>Share</span>
+                            </button>
+                        </div>
+                        <button onclick="openProductLink('pottery-vase')" class="bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-green-600 transition-colors">
+                            Buy Now ₹2,500
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Collaborative Reel -->
+                <div class="reel-item glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-gradient-to-r from-red-400 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
+                                PS
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white">Priya Sharma × EcoFashion</h4>
+                                <p class="text-white/70 text-sm">Textile Artist • Brand Partnership</p>
+                            </div>
+                        </div>
+                        <div class="collaboration-badge text-white px-3 py-1 rounded-full text-xs font-bold">
+                            COLLAB
+                        </div>
+                    </div>
+                    
+                    <div class="relative w-full h-64 bg-gradient-to-br from-red-400 to-pink-600 rounded-xl mb-4 overflow-hidden group cursor-pointer" onclick="playReel('textile-collab')">
+                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/20 transition-all">
+                            <div class="text-white text-center">
+                                <div class="text-6xl mb-2 group-hover:scale-110 transition-transform">▶️</div>
+                                <p class="font-medium">Sustainable Weaving Collab</p>
+                                <p class="text-sm opacity-80">5.7K views • 1 day ago</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-white mb-4">
+                        Excited to partner with @EcoFashionBrand for this sustainable textile collection! 🌱🧵
+                        <br><br>
+                        Traditional weaving meets modern sustainability. Each piece tells a story of heritage and innovation.
+                        <br>
+                        <span class="text-white/60">#Collaboration #SustainableFashion #TraditionalWeaving</span>
+                    </p>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex space-x-6">
+                            <button onclick="likeReel('textile-collab')" class="flex items-center space-x-2 text-white/80 hover:text-red-400 transition-colors">
+                                <span class="text-xl">❤️</span> <span>567</span>
+                            </button>
+                            <button onclick="commentReel('textile-collab')" class="flex items-center space-x-2 text-white/80 hover:text-blue-400 transition-colors">
+                                <span class="text-xl">💬</span> <span>89</span>
+                            </button>
+                            <button onclick="shareReel('textile-collab')" class="flex items-center space-x-2 text-white/80 hover:text-green-400 transition-colors">
+                                <span class="text-xl">📤</span> <span>Share</span>
+                            </button>
+                        </div>
+                        <button onclick="requestCollaboration('priya')" class="bg-purple-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-purple-600 transition-colors">
+                            Collaborate
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Customer Review Reel -->
+                <div class="reel-item glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                                AC
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white">Anita Customer</h4>
+                                <p class="text-white/70 text-sm">Verified Buyer • Product Review</p>
+                            </div>
+                        </div>
+                        <div class="flex text-yellow-400 text-lg">
+                            ⭐⭐⭐⭐⭐
+                        </div>
+                    </div>
+                    
+                    <div class="relative w-full h-64 bg-gradient-to-br from-green-400 to-blue-600 rounded-xl mb-4 overflow-hidden group cursor-pointer" onclick="playReel('customer-review')">
+                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/20 transition-all">
+                            <div class="text-white text-center">
+                                <div class="text-6xl mb-2 group-hover:scale-110 transition-transform">▶️</div>
+                                <p class="font-medium">Unboxing & Review</p>
+                                <p class="text-sm opacity-80">1.2K views • 2 days ago</p>
+                            </div>
+                        </div>
+                        <div class="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                            VERIFIED
+                        </div>
+                    </div>
+                    
+                    <p class="text-white mb-4">
+                        Absolutely stunning pottery from @RajeshKumar! 🏺✨ The craftsmanship is incredible and the quality exceeded my expectations.
+                        <br><br>
+                        Perfect addition to my home decor. Highly recommend supporting these talented artisans!
+                        <br>
+                        <span class="text-white/60">#ProductReview #HandmadePottery #ArtisanSupport</span>
+                    </p>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex space-x-6">
+                            <button onclick="likeReel('customer-review')" class="flex items-center space-x-2 text-white/80 hover:text-red-400 transition-colors">
+                                <span class="text-xl">❤️</span> <span>123</span>
+                            </button>
+                            <button onclick="commentReel('customer-review')" class="flex items-center space-x-2 text-white/80 hover:text-blue-400 transition-colors">
+                                <span class="text-xl">💬</span> <span>34</span>
+                            </button>
+                            <button onclick="shareReel('customer-review')" class="flex items-center space-x-2 text-white/80 hover:text-green-400 transition-colors">
+                                <span class="text-xl">📤</span> <span>Share</span>
+                            </button>
+                        </div>
+                        <button onclick="viewReviewedProduct('pottery-vase')" class="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-600 transition-colors">
+                            View Product
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Artist Dashboard -->
+    <div id="dashboard-section" class="hidden min-h-screen p-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-['Playfair_Display'] font-bold text-white">Artist Dashboard</h2>
+                <div class="tech-indicator">React Analytics Engine</div>
+            </div>
+            
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">📦 Orders</h3>
+                        <span class="text-green-400 text-sm">+12%</span>
+                    </div>
+                    <div class="text-3xl font-bold text-white mb-2">47</div>
+                    <p class="text-white/70 text-sm">This month</p>
+                </div>
+                
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">💰 Revenue</h3>
+                        <span class="text-green-400 text-sm">+25%</span>
+                    </div>
+                    <div class="text-3xl font-bold text-white mb-2">₹1,23,450</div>
+                    <p class="text-white/70 text-sm">This month</p>
+                </div>
+                
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">⭐ Rating</h3>
+                        <span class="text-yellow-400 text-sm">Excellent</span>
+                    </div>
+                    <div class="text-3xl font-bold text-white mb-2">4.8</div>
+                    <p class="text-white/70 text-sm">Average rating</p>
+                </div>
+                
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">👥 Followers</h3>
+                        <span class="text-blue-400 text-sm">+8%</span>
+                    </div>
+                    <div class="text-3xl font-bold text-white mb-2">2.3K</div>
+                    <p class="text-white/70 text-sm">Total followers</p>
+                </div>
+            </div>
+            
+            <!-- Collaboration Requests -->
+            <div class="glass-card rounded-2xl p-6 mb-8">
+                <h3 class="text-xl font-semibold text-white mb-6">🤝 Collaboration Requests</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-white/10 rounded-xl backdrop-blur-sm">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <h4 class="font-semibold text-white">EcoFashion Brand</h4>
+                                <div class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                                    High Budget
+                                </div>
+                            </div>
+                            <p class="text-white/70 mb-2">Partnership for sustainable textile collection with global reach</p>
+                            <div class="flex space-x-2">
+                                <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Long Term</span>
+                                <span class="bg-purple-500 text-white px-2 py-1 rounded text-xs">International</span>
+                                <span class="bg-yellow-500 text-black px-2 py-1 rounded text-xs">₹50K+ Budget</span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button onclick="acceptCollaboration('ecofashion')" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                Accept
+                            </button>
+                            <button onclick="declineCollaboration('ecofashion')" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                                Decline
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-4 bg-white/10 rounded-xl backdrop-blur-sm">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <h4 class="font-semibold text-white">TechStartup Inc</h4>
+                                <div class="bg-yellow-500 text-black px-2 py-1 rounded-full text-xs font-semibold">
+                                    Medium Budget
+                                </div>
+                            </div>
+                            <p class="text-white/70 mb-2">Custom pottery pieces for modern office spaces</p>
+                            <div class="flex space-x-2">
+                                <span class="bg-orange-500 text-white px-2 py-1 rounded text-xs">One Time</span>
+                                <span class="bg-indigo-500 text-white px-2 py-1 rounded text-xs">Corporate</span>
+                                <span class="bg-green-500 text-white px-2 py-1 rounded text-xs">₹25K Budget</span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button onclick="acceptCollaboration('techstartup')" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                Accept
+                            </button>
+                            <button onclick="declineCollaboration('techstartup')" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                                Decline
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <button onclick="createPost()" class="glass-card rounded-2xl p-6 text-center hover:bg-white/20 transition-all group">
+                    <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">📸</div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Create Post</h3>
+                    <p class="text-white/70 text-sm">Share your latest creation with AI enhancement</p>
+                </button>
+                
+                <button onclick="createReel()" class="glass-card rounded-2xl p-6 text-center hover:bg-white/20 transition-all group">
+                    <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🎥</div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Create Reel</h3>
+                    <p class="text-white/70 text-sm">Promote products with computer vision editing</p>
+                </button>
+                
+                <button onclick="scheduleWorkshop()" class="glass-card rounded-2xl p-6 text-center hover:bg-white/20 transition-all group">
+                    <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🎓</div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Schedule Workshop</h3>
+                    <p class="text-white/70 text-sm">Teach with AI translation support</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workshops Section -->
+    <div id="workshops-section" class="hidden min-h-screen p-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-['Playfair_Display'] font-bold text-white mb-4">
+                    AI-Powered Workshops
+                </h2>
+                <div class="tech-indicator inline-block mb-4">Real-time Translation • Computer Vision Guidance</div>
+                <p class="text-white/80">Learn traditional crafts with AI assistance in your native language</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Pottery Workshop -->
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="relative w-full h-48 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl mb-6 overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center text-6xl">
+                            🏺
+                        </div>
+                        <div class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold pulse-ring">
+                            LIVE NOW
+                        </div>
+                        <div class="absolute bottom-4 left-4 bg-black/50 text-white px-2 py-1 rounded text-xs backdrop-blur-sm">
+                            AI Translation Active
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-white mb-3">Traditional Pottery Making</h3>
+                    <p class="text-white/70 mb-4">Master ancient pottery techniques with real-time AI guidance and translation</p>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-white">👥</span>
+                                <span class="text-white">15/20 participants</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-white">⏰</span>
+                                <span class="text-white">2 hours</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <span class="text-white">🌐 Language:</span>
+                            <select class="bg-white/20 text-white rounded-lg px-3 py-1 text-sm backdrop-blur-sm border border-white/30">
+                                <option>English</option>
+                                <option>Hindi</option>
+                                <option>Tamil</option>
+                                <option>Bengali</option>
+                                <option>Marathi</option>
+                            </select>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-white">₹2,500</span>
+                            <span class="text-white/70 text-sm">Min 10 participants required</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="joinWorkshop('pottery')" class="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white py-3 rounded-xl font-semibold hover:from-green-500 hover:to-blue-600 transition-all transform hover:scale-105">
+                        Join Live Workshop
+                    </button>
+                </div>
+                
+                <!-- Weaving Workshop -->
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="relative w-full h-48 bg-gradient-to-br from-red-400 to-red-600 rounded-xl mb-6 overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center text-6xl">
+                            🧵
+                        </div>
+                        <div class="absolute top-4 right-4 bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold">
+                            STARTS SOON
+                        </div>
+                        <div class="absolute bottom-4 left-4 bg-black/50 text-white px-2 py-1 rounded text-xs backdrop-blur-sm">
+                            Computer Vision Guidance
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-white mb-3">Traditional Weaving Techniques</h3>
+                    <p class="text-white/70 mb-4">Learn heritage weaving with computer vision pattern recognition</p>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-white">👥</span>
+                                <span class="text-white">8/15 participants</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-white">⏰</span>
+                                <span class="text-white">3 hours</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <span class="text-white">🤖 AI Features:</span>
+                            <div class="flex space-x-2">
+                                <span class="bg-purple-500 text-white px-2 py-1 rounded text-xs">Pattern Recognition</span>
+                                <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Quality Check</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-white">₹3,000</span>
+                            <span class="text-white/70 text-sm">Starts in 2 hours</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="joinWorkshop('weaving')" class="w-full bg-gradient-to-r from-purple-400 to-pink-500 text-white py-3 rounded-xl font-semibold hover:from-purple-500 hover:to-pink-600 transition-all transform hover:scale-105">
+                        Reserve Spot
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AR Studio Section -->
+    <div id="ar-studio-section" class="hidden min-h-screen p-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-['Playfair_Display'] font-bold text-white mb-4">
+                AR Try-On Studio
+            </h2>
+            <div class="tech-indicator inline-block mb-8">Computer Vision • 3D Scanning • AR Technology</div>
+            
+            <div class="glass-card rounded-2xl p-8 mb-8">
+                <div class="ar-overlay w-full h-96 rounded-xl mb-6 flex items-center justify-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-400/20 to-purple-600/20"></div>
+                    <div class="text-white text-center z-10">
+                        <div class="text-8xl mb-4">📱</div>
+                        <p class="text-2xl font-semibold mb-2">AR Camera View</p>
+                        <p class="text-white/80">Computer vision tracking active</p>
+                        <div class="mt-4 flex justify-center space-x-4">
+                            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                            <div class="w-3 h-3 bg-blue-400 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+                            <div class="w-3 h-3 bg-purple-400 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <button onclick="selectARProduct('ring')" class="glass-card p-4 rounded-xl hover:bg-white/20 transition-all group">
+                        <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">💍</div>
+                        <p class="text-white text-sm font-medium">Ring Try-On</p>
+                        <p class="text-white/60 text-xs">Hand tracking</p>
+                    </button>
+                    <button onclick="selectARProduct('necklace')" class="glass-card p-4 rounded-xl hover:bg-white/20 transition-all group">
+                        <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">📿</div>
+                        <p class="text-white text-sm font-medium">Necklace</p>
+                        <p class="text-white/60 text-xs">Neck tracking</p>
+                    </button>
+                    <button onclick="selectARProduct('earrings')" class="glass-card p-4 rounded-xl hover:bg-white/20 transition-all group">
+                        <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">👂</div>
+                        <p class="text-white text-sm font-medium">Earrings</p>
+                        <p class="text-white/60 text-xs">Ear tracking</p>
+                    </button>
+                </div>
+                
+                <div class="flex justify-center space-x-4">
+                    <button onclick="startAR()" class="bg-gradient-to-r from-green-400 to-blue-500 text-white px-8 py-3 rounded-xl font-semibold hover:from-green-500 hover:to-blue-600 transition-all transform hover:scale-105">
+                        Start AR Experience
+                    </button>
+                    <button onclick="scan3D()" class="bg-gradient-to-r from-purple-400 to-pink-500 text-white px-8 py-3 rounded-xl font-semibold hover:from-purple-500 hover:to-pink-600 transition-all transform hover:scale-105">
+                        3D Scan Product
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Chatbot -->
+    <div id="chatbot" class="fixed bottom-6 right-6 z-50">
+        <div id="chat-toggle" class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-2xl cursor-pointer floating-bot shadow-2xl" onclick="toggleChat()">
+            🤖
+        </div>
+        
+        <div id="chat-window" class="hidden absolute bottom-20 right-0 w-80 h-96 glass-card rounded-2xl overflow-hidden">
+            <div class="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-4 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-semibold">AI Assistant</h3>
+                        <p class="text-sm opacity-90">Powered by Generative AI</p>
+                    </div>
+                    <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                </div>
+            </div>
+            
+            <div id="chat-messages" class="h-64 overflow-y-auto p-4 space-y-3">
+                <div class="bg-white/20 rounded-lg p-3 text-white backdrop-blur-sm">
+                    <strong>🤖 AI Assistant:</strong>
+                    <br><br>
+                    Hello! I'm your intelligent assistant powered by advanced AI. I can help you with:
+                    <br><br>
+                    • 🎨 Product recommendations using computer vision
+                    <br>• 🤝 Connecting with verified artisans
+                    <br>• 🌐 Real-time language translation
+                    <br>• 🎓 Workshop guidance and scheduling
+                    <br>• 📱 AR try-on assistance
+                    <br>• 🎯 Custom design generation
+                    <br><br>
+                    How can I assist you today?
+                </div>
+            </div>
+            
+            <div class="p-4 border-t border-white/20">
+                <div class="flex space-x-2 mb-2">
+                    <select id="chat-language" class="bg-white/20 text-white rounded-lg px-3 py-1 text-sm backdrop-blur-sm border border-white/30 flex-1">
+                        <option>🇺🇸 English</option>
+                        <option>🇮🇳 Hindi</option>
+                        <option>🇮🇳 Tamil</option>
+                        <option>🇮🇳 Bengali</option>
+                        <option>🇮🇳 Marathi</option>
+                    </select>
+                    <div class="tech-indicator text-xs">NLP</div>
+                </div>
+                <div class="flex space-x-2">
+                    <input type="text" id="chat-input" placeholder="Ask me anything..." class="flex-1 p-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:border-white/50 backdrop-blur-sm" onkeypress="handleChatKeypress(event)">
+                    <button onclick="sendMessage()" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all">
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUserType = 'customer';
+        let currentAuthMode = 'login';
+        let currentSection = 'login';
+        let isLoggedIn = false;
+
+        // Section Management
+        function showSection(section) {
+            document.querySelectorAll('[id$="-section"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById(section + '-section').classList.remove('hidden');
+            currentSection = section;
+        }
+
+        // Authentication
+        function setUserType(type) {
+            currentUserType = type;
+            const customerBtn = document.getElementById('customer-btn');
+            const artistBtn = document.getElementById('artist-btn');
+            
+            if (type === 'customer') {
+                customerBtn.className = 'flex-1 py-3 px-4 rounded-xl bg-white text-purple-600 font-medium transition-all';
+                artistBtn.className = 'flex-1 py-3 px-4 rounded-xl text-white/70 font-medium transition-all';
+            } else {
+                customerBtn.className = 'flex-1 py-3 px-4 rounded-xl text-white/70 font-medium transition-all';
+                artistBtn.className = 'flex-1 py-3 px-4 rounded-xl bg-white text-purple-600 font-medium transition-all';
+            }
+        }
+
+        function setAuthMode(mode) {
+            currentAuthMode = mode;
+            const loginTab = document.getElementById('login-tab');
+            const signupTab = document.getElementById('signup-tab');
+            
+            if (mode === 'login') {
+                loginTab.className = 'flex-1 py-2 px-4 rounded-lg bg-white/20 text-white font-medium';
+                signupTab.className = 'flex-1 py-2 px-4 rounded-lg text-white/70 font-medium';
+                document.getElementById('auth-text').textContent = 'Login to Continue';
+            } else {
+                loginTab.className = 'flex-1 py-2 px-4 rounded-lg text-white/70 font-medium';
+                signupTab.className = 'flex-1 py-2 px-4 rounded-lg bg-white/20 text-white font-medium';
+                document.getElementById('auth-text').textContent = 'Create Account';
+            }
+            
+            document.getElementById('email-field').classList.toggle('hidden', mode === 'login');
+            document.getElementById('confirm-password-field').classList.toggle('hidden', mode === 'login');
+        }
+
+        function handleAuth(event) {
+            event.preventDefault();
+            isLoggedIn = true;
+            document.getElementById('login-btn').classList.add('hidden');
+            document.getElementById('user-profile').classList.remove('hidden');
+            
+            setTimeout(() => {
+                if (currentUserType === 'artist') {
+                    showSection('dashboard');
+                } else {
+                    showSection('home');
+                }
+            }, 1000);
+        }
+
+        // Reel Functions
+        function filterReels(type) {
+            document.querySelectorAll('[id$="-filter"]').forEach(btn => {
+                btn.className = 'px-6 py-3 bg-white/20 text-white rounded-full font-medium backdrop-blur-sm whitespace-nowrap';
+            });
+            document.getElementById(type + '-filter').className = 'px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-medium whitespace-nowrap';
+        }
+
+        function playReel(reelId) {
+            alert(`Playing reel: ${reelId}. Computer vision analyzing content for personalized recommendations!`);
+        }
+
+        function likeReel(reelId) {
+            alert(`Liked reel: ${reelId}. AI learning your preferences for better recommendations!`);
+        }
+
+        function commentReel(reelId) {
+            alert(`Opening comments for reel: ${reelId}. Real-time translation available!`);
+        }
+
+        function shareReel(reelId) {
+            alert(`Sharing reel: ${reelId} with AI-generated captions in multiple languages!`);
+        }
+
+        function followArtist(artistId) {
+            alert(`Following artist: ${artistId}. You'll get AI-curated updates about their work!`);
+        }
+
+        function openProductLink(productId) {
+            alert(`Opening product: ${productId} with 3D view and AR try-on options!`);
+        }
+
+        function requestCollaboration(artistId) {
+            alert(`Collaboration request sent to ${artistId}. AI will match your requirements with their expertise!`);
+        }
+
+        function viewReviewedProduct(productId) {
+            alert(`Viewing reviewed product: ${productId} with computer vision authenticity verification!`);
+        }
+
+        // Product Functions
+        function tryAR(product) {
+            alert(`Starting AR try-on for ${product}. Computer vision will track and fit the product virtually using advanced algorithms!`);
+        }
+
+        function customizeAI(product) {
+            alert(`AI is generating custom ${product} designs based on traditional patterns and your preferences using generative AI!`);
+        }
+
+        function verifyAuth(product) {
+            alert(`Computer vision is verifying the authenticity of this ${product} using blockchain and pattern recognition!`);
+        }
+
+        function addToCart(product) {
+            alert(`Added ${product} to cart! AI will suggest complementary items based on your purchase history.`);
+        }
+
+        function viewPattern(product) {
+            alert(`Viewing AI-generated patterns for ${product}. Computer vision analyzed thousands of traditional designs!`);
+        }
+
+        function collaborate(product) {
+            alert(`Opening collaboration opportunities for ${product}. AI matching with interested brands and companies!`);
+        }
+
+        // Dashboard Functions
+        function acceptCollaboration(company) {
+            alert(`Collaboration with ${company} accepted! AI will generate smart contracts and project timelines.`);
+        }
+
+        function declineCollaboration(company) {
+            alert(`Collaboration with ${company} declined. AI will suggest alternative opportunities.`);
+        }
+
+        function createPost() {
+            alert('Opening post creation studio with AI-powered image enhancement and automatic tagging!');
+        }
+
+        function createReel() {
+            alert('Opening reel creation with computer vision editing tools and AI-generated music suggestions!');
+        }
+
+        function scheduleWorkshop() {
+            alert('Opening workshop scheduler with AI translation setup and participant matching algorithms!');
+        }
+
+        // Workshop Functions
+        function joinWorkshop(type) {
+            alert(`Joining ${type} workshop! AI will provide real-time translation and computer vision guidance throughout the session.`);
+        }
+
+        // AR Functions
+        function selectARProduct(product) {
+            alert(`Selected ${product} for AR try-on. Computer vision will track facial/body features for accurate virtual fitting!`);
+        }
+
+        function startAR() {
+            alert('Starting AR camera with advanced computer vision tracking. Point camera at yourself to try on products with realistic lighting and shadows!');
+        }
+
+        function scan3D() {
+            alert('Starting 3D scanning mode. Computer vision will create detailed 3D models for AR try-on and product visualization!');
+        }
+
+        // Chat Functions
+        function toggleChat() {
+            const chatWindow = document.getElementById('chat-window');
+            chatWindow.classList.toggle('hidden');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const language = document.getElementById('chat-language').value;
+            const message = input.value.trim();
+            if (!message) return;
+
+            const messagesContainer = document.getElementById('chat-messages');
+            
+            const userMessage = document.createElement('div');
+            userMessage.className = 'bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-3 text-white ml-8';
+            userMessage.textContent = message;
+            messagesContainer.appendChild(userMessage);
+            
+            setTimeout(() => {
+                const aiMessage = document.createElement('div');
+                aiMessage.className = 'bg-white/20 rounded-lg p-3 text-white backdrop-blur-sm';
+                aiMessage.innerHTML = getAIResponse(message, language);
+                messagesContainer.appendChild(aiMessage);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 1500);
+            
+            input.value = '';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function getAIResponse(message, language) {
+            const responses = [
+                `<strong>🤖 AI Response (${language}):</strong><br><br>I found 3 traditional pottery pieces that match your style preferences using computer vision analysis. Would you like me to show AR try-on options?`,
+                
+                `<strong>🎨 Artisan Recommendation:</strong><br><br>Based on your query, I recommend connecting with Master Craftsman Rajesh Kumar. His work has 98% authenticity verification through our computer vision system. Shall I arrange a virtual meeting?`,
+                
+                `<strong>🎓 Workshop Suggestion:</strong><br><br>I found a pottery workshop starting in 2 hours with real-time translation to ${language}. The AI instructor will provide personalized guidance. Would you like to join?`,
+                
+                `<strong>🎯 Custom Design AI:</strong><br><br>I can generate personalized craft designs based on traditional patterns from your region. Using generative AI, I'll create unique pieces that honor cultural heritage. Shall I start the design process?`,
+                
+                `<strong>📱 AR Experience:</strong><br><br>This jewelry piece supports AR try-on with computer vision tracking. I can start the AR camera and show you how it looks with realistic lighting and shadows. Ready to try?`,
+                
+                `<strong>🌐 Translation Service:</strong><br><br>I can translate this workshop content to ${language} in real-time using advanced NLP. The instructor's voice will be converted to your preferred language with cultural context preserved.`,
+                
+                `<strong>🔍 Authenticity Check:</strong><br><br>Computer vision analysis confirms this piece is 100% authentic traditional craft. The blockchain certificate shows its complete provenance from raw materials to finished product.`
+            ];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        function toggleUserMenu() {
+            alert('User menu: Profile Settings, AI Preferences, Language Settings, AR Calibration, Logout');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('login');
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97f85f2f7199d3d4',t:'MTc1Nzk0MTkwNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
